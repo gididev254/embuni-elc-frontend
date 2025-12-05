@@ -23,7 +23,7 @@
     "security:fix": "npm audit fix"
   },
   "dependencies": {
-    "@tailwindcss/postcss": "^4.0.0",
+    "autoprefixer": "^10.4.22",
     "axios": "^1.13.2",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
@@ -31,6 +31,7 @@
     "i18next": "^25.7.1",
     "i18next-browser-languagedetector": "^8.2.0",
     "lucide-react": "^0.555.0",
+    "postcss": "^8.5.6",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "react-i18next": "^16.3.5",
@@ -40,6 +41,7 @@
     "recharts": "^3.5.1",
     "slick-carousel": "^1.8.1",
     "socket.io-client": "^4.8.1",
+    "tailwindcss": "^3.4.1",
     "terser": "^5.44.1",
     "zustand": "^5.0.9"
   },

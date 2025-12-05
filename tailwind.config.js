@@ -1,8 +1,12 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/styles/*.css"
+  ],
+  safelist: [
+    'sm:px-6' // Safelist the problematic class
   ],
   theme: {
     extend: {
