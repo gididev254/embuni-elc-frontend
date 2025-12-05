@@ -2,8 +2,6 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { existsSync, readFileSync } from 'fs';
-import tailwindcss from 'tailwindcss';
-import autoprefixer from 'autoprefixer';
 
 // Helper function to parse .env file
 function parseEnvFile(filePath) {
@@ -64,15 +62,7 @@ export default defineConfig(({ mode }) => {
         '@': path.resolve(__dirname, './src'),
       },
     },
-    // CSS configuration
-    css: {
-      postcss: {
-        plugins: [
-          tailwindcss,
-          autoprefixer,
-        ],
-      },
-    },
+    // CSS configuration - PostCSS is now handled by postcss.config.js
     // Build optimizations for better performance
     build: {
       // Enable minification
