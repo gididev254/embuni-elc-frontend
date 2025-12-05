@@ -362,8 +362,8 @@ function App() {
                       <Route path="/admin/manage-programs" element={
                         <AdminRoute requiredPermission={PERMISSIONS.MANAGE_PROGRAMS}>
                           <ProgramsAdminPortal />
-                  </ProtectedRoute>
-                } />
+                        </AdminRoute>
+                      } />
                 <Route path="/portal/profile" element={
                   <ProtectedRoute>
                     <Profile />
