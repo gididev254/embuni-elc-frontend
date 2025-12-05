@@ -62,6 +62,15 @@ export default defineConfig(({ mode }) => {
         '@': path.resolve(__dirname, './src'),
       },
     },
+    // CSS configuration
+    css: {
+      postcss: {
+        plugins: [
+          require('@tailwindcss/postcss'),
+          require('autoprefixer'),
+        ],
+      },
+    },
     // Build optimizations for better performance
     build: {
       // Enable minification
