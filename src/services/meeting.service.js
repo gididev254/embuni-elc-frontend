@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_BASE_URL } from '../config/api';
-import { authHeader } from './auth.service';
+import { authHeader } from './authService';
 
 const MEETING_API_URL = `${API_BASE_URL}/meetings`;
 
