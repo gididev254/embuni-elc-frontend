@@ -48,7 +48,11 @@ import {
   RadioGroup,
   Radio,
   FormLabel,
-  FormGroup
+  FormGroup,
+  Collapse,
+  CircularProgress,
+  Backdrop,
+  Divider
 } from '@mui/material';
 import {
   VideoCall as VideoCallIcon,
@@ -142,7 +146,9 @@ import {
   CastForEducation as CastForEducationIcon4,
   Cast as CastIcon4,
   CastConnected as CastConnectedIcon5,
-  CastForEducation as CastForEducationIcon5
+  CastForEducation as CastForEducationIcon5,
+  Repeat as RepeatIcon,
+  Translate as TranslateIcon
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import meetingService from '../services/meeting.service';
@@ -240,6 +246,12 @@ const MeetingHome = () => {
     enableGoogleDrive: true,
     enableJamboard: true,
     enableDocsSheetsSlides: true,
+    
+    // Additional settings
+    enableRecording: false,
+    enableHandouts: false,
+    allowJoinBeforeHost: true,
+    requirePassword: false,
   });
   
   // Dialog states
@@ -475,16 +487,24 @@ const MeetingHome = () => {
   };
   
   // Handle join meeting
-  const handleJoinMeeting = () => {
+  const handleJoinMeeting = async () => {
     if (!meetingCode.trim()) {
       toast.error('Please enter a meeting code');
       return;
     }
     
-    // Navigate to the meeting room
-    navigate(`/meeting/${meetingCode.trim()}`, {
-      state: { password: meetingPassword }
-    });
+    try {
+      setIsJoining(true);
+      // Navigate to the meeting room
+      navigate(`/meeting/${meetingCode.trim()}`, {
+        state: { password: meetingPassword }
+      });
+    } catch (error) {
+      console.error('Error joining meeting:', error);
+      toast.error('Failed to join meeting');
+    } finally {
+      setIsJoining(false);
+    }
   };
   
   // Copy meeting link to clipboard
@@ -568,7 +588,7 @@ const MeetingHome = () => {
         <ListItemAvatar>
           <Avatar><VideocamIcon /></Avatar>
         </ListItemAvatar>
-        <ListItemText 
+        <MuiListItemText 
           primary="Video on join" 
           secondary="Turn on your video when joining a meeting" 
         />
@@ -583,7 +603,7 @@ const MeetingHome = () => {
         <ListItemAvatar>
           <Avatar><MicIcon /></Avatar>
         </ListItemAvatar>
-        <ListItemText 
+        <MuiListItemText 
           primary="Audio on join" 
           secondary="Turn on your microphone when joining a meeting" 
         />
@@ -598,7 +618,7 @@ const MeetingHome = () => {
         <ListItemAvatar>
           <Avatar><ClosedCaptionIcon /></Avatar>
         </ListItemAvatar>
-        <ListItemText 
+        <MuiListItemText 
           primary="Live captions" 
           secondary="Show automatic captions during the meeting" 
         />
@@ -617,7 +637,7 @@ const MeetingHome = () => {
         <ListItemAvatar>
           <Avatar><GroupIcon /></Avatar>
         </ListItemAvatar>
-        <ListItemText 
+        <MuiListItemText 
           primary="Breakout rooms" 
           secondary="Create smaller group sessions" 
         />
@@ -632,7 +652,7 @@ const MeetingHome = () => {
         <ListItemAvatar>
           <Avatar><PollIcon /></Avatar>
         </ListItemAvatar>
-        <ListItemText 
+        <MuiListItemText 
           primary="Polls & Q&A" 
           secondary="Enable interactive engagement features" 
         />
@@ -653,7 +673,7 @@ const MeetingHome = () => {
         <ListItemAvatar>
           <Avatar><RecordVoiceOverIcon /></Avatar>
         </ListItemAvatar>
-        <ListItemText 
+        <MuiListItemText 
           primary="Raise hand & reactions" 
           secondary="Allow participants to interact non-verbally" 
         />
@@ -678,7 +698,7 @@ const MeetingHome = () => {
         <ListItemAvatar>
           <Avatar><LockIcon /></Avatar>
         </ListItemAvatar>
-        <ListItemText 
+        <MuiListItemText 
           primary="Require authentication" 
           secondary="Only signed-in users can join" 
         />
@@ -693,7 +713,7 @@ const MeetingHome = () => {
         <ListItemAvatar>
           <Avatar><PeopleIcon /></Avatar>
         </ListItemAvatar>
-        <ListItemText 
+        <MuiListItemText 
           primary="Waiting room" 
           secondary="Admit participants one by one" 
         />
@@ -708,7 +728,7 @@ const MeetingHome = () => {
         <ListItemAvatar>
           <Avatar><SecurityIcon /></Avatar>
         </ListItemAvatar>
-        <ListItemText 
+        <MuiListItemText 
           primary="Restrict participant actions" 
           secondary="Limit what participants can do" 
         />
@@ -727,7 +747,7 @@ const MeetingHome = () => {
         <ListItemAvatar>
           <Avatar><MicOffIcon /></Avatar>
         </ListItemAvatar>
-        <ListItemText 
+        <MuiListItemText 
           primary="Noise cancellation" 
           secondary="Reduce background noise" 
         />
@@ -742,7 +762,7 @@ const MeetingHome = () => {
         <ListItemAvatar>
           <Avatar><VideocamIcon /></Avatar>
         </ListItemAvatar>
-        <ListItemText 
+        <MuiListItemText 
           primary="Studio look" 
           secondary="Enhance your video quality" 
         />
@@ -757,7 +777,7 @@ const MeetingHome = () => {
         <ListItemAvatar>
           <Avatar><TranslateIcon /></Avatar>
         </ListItemAvatar>
-        <ListItemText 
+        <MuiListItemText 
           primary="Live translation" 
           secondary="Translate captions in real-time" 
         />
@@ -767,17 +787,12 @@ const MeetingHome = () => {
           onChange={() => toggleSetting('enableLiveTranslation')} 
         />
       </ListItem>
-          edge="end" 
-          checked={settings.enableLiveCaptions} 
-          onChange={() => toggleSetting('enableLiveCaptions')} 
-        />
-      </ListItem>
       
       <MuiDivider />
       <ListSubheader>Advanced</ListSubheader>
       
       <ListItem>
-        <ListItemText 
+        <MuiListItemText 
           primary="Enable recording" 
           secondary="Allow recording of the meeting" 
         />
@@ -789,7 +804,7 @@ const MeetingHome = () => {
       </ListItem>
       
       <ListItem>
-        <ListItemText 
+        <MuiListItemText 
           primary="Breakout rooms" 
           secondary="Allow creating smaller groups" 
         />
@@ -801,7 +816,7 @@ const MeetingHome = () => {
       </ListItem>
       
       <ListItem>
-        <ListItemText 
+        <MuiListItemText 
           primary="Polls" 
           secondary="Allow creating and conducting polls" 
         />
@@ -813,7 +828,7 @@ const MeetingHome = () => {
       </ListItem>
       
       <ListItem>
-        <ListItemText 
+        <MuiListItemText 
           primary="Q&A" 
           secondary="Enable Q&A feature" 
         />
@@ -825,7 +840,7 @@ const MeetingHome = () => {
       </ListItem>
       
       <ListItem>
-        <ListItemText 
+        <MuiListItemText 
           primary="Whiteboard" 
           secondary="Enable collaborative whiteboard" 
         />
@@ -837,7 +852,7 @@ const MeetingHome = () => {
       </ListItem>
       
       <ListItem>
-        <ListItemText 
+        <MuiListItemText 
           primary="Handouts" 
           secondary="Allow sharing handouts" 
         />
@@ -849,7 +864,7 @@ const MeetingHome = () => {
       </ListItem>
       
       <ListItem>
-        <ListItemText 
+        <MuiListItemText 
           primary="Live streaming" 
           secondary="Allow live streaming to YouTube or other platforms" 
         />
@@ -861,7 +876,7 @@ const MeetingHome = () => {
       </ListItem>
       
       <ListItem>
-        <ListItemText 
+        <MuiListItemText 
           primary="Live translation" 
           secondary="Enable live translation of captions" 
         />
@@ -1145,7 +1160,9 @@ const MeetingHome = () => {
                 <Box textAlign="center" width="100%">
                   <VideocamIcon sx={{ display: 'block', mx: 'auto', mb: 1 }} />
                   <Typography variant="body2" fontWeight={500}>New meeting</Typography>
-                  <Typography variant="caption" color="text.secondary">Start an instant meeting</Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Start an instant meeting
+                  </Typography>
                 </Box>
               </Button>
               <Button 
@@ -1165,7 +1182,9 @@ const MeetingHome = () => {
                 <Box textAlign="center" width="100%">
                   <EventIcon sx={{ display: 'block', mx: 'auto', mb: 1 }} />
                   <Typography variant="body2" fontWeight={500}>Schedule</Typography>
-                  <Typography variant="caption" color="text.secondary">Set a time for later</Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Set a time for later
+                  </Typography>
                 </Box>
               </Button>
             </ButtonGroup>
@@ -1505,215 +1524,6 @@ const MeetingHome = () => {
       </Dialog>
     );
   };
-              
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={recurringMeeting}
-                      onChange={(e) => setRecurringMeeting(e.target.checked)}
-                      color="primary"
-                    />
-                  }
-                  label="Recurring meeting"
-                />
-                
-                {recurringMeeting && (
-                  <Box mt={2} pl={4}>
-                    <MuiTextField
-                      fullWidth
-                      label="Recurrence"
-                      select
-                      value={recurrence.frequency}
-                      onChange={(e) => setRecurrence(prev => ({
-                        ...prev,
-                        frequency: e.target.value
-                      }))}
-                      margin="normal"
-                      size="small"
-                      SelectProps={{
-                        native: true,
-                      }}
-                    >
-                      <option value="daily">Daily</option>
-                      <option value="weekly">Weekly</option>
-                      <option value="monthly">Monthly</option>
-                    </MuiTextField>
-                    
-                    {recurrence.frequency === 'weekly' && (
-                      <Box mt={2}>
-                        <Typography variant="subtitle2" gutterBottom>
-                          Repeat on
-                        </Typography>
-                        <Box display="flex" gap={1} flexWrap="wrap">
-                          {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day, index) => (
-                            <Chip
-                              key={day}
-                              label={day[0]}
-                              variant={recurrence.days.includes(index.toString()) ? 'filled' : 'outlined'}
-                              color="primary"
-                              onClick={() => {
-                                setRecurrence(prev => {
-                                  const days = [...prev.days];
-                                  const dayIndex = days.indexOf(index.toString());
-                                  
-                                  if (dayIndex === -1) {
-                                    days.push(index.toString());
-                                  } else {
-                                    days.splice(dayIndex, 1);
-                                  }
-                                  
-                                  return {
-                                    ...prev,
-                                    days
-                                  };
-                                });
-                              }}
-                              sx={{
-                                width: 36,
-                                height: 36,
-                                borderRadius: '50%',
-                                fontWeight: 'bold',
-                                ...(recurrence.days.includes(index.toString()) ? {
-                                  backgroundColor: 'primary.main',
-                                  color: 'primary.contrastText',
-                                } : {})
-                              }}
-                            />
-                          ))}
-                        </Box>
-                      </Box>
-                    )}
-                    
-                    <Box mt={2}>
-                      <Typography variant="subtitle2" gutterBottom>
-                        End
-                      </Typography>
-                      <Box display="flex" alignItems="center" gap={2}>
-                        <FormControlLabel
-                          control={
-                            <Radio
-                              checked={recurrence.endType === 'never'}
-                              onChange={() => setRecurrence(prev => ({
-                                ...prev,
-                                endType: 'never'
-                              }))}
-                              value="never"
-                              name="end-type"
-                              color="primary"
-                            />
-                          }
-                          label="Never"
-                        />
-                        
-                        <FormControlLabel
-                          control={
-                            <Radio
-                              checked={recurrence.endType === 'on'}
-                              onChange={() => setRecurrence(prev => ({
-                                ...prev,
-                                endType: 'on'
-                              }))}
-                              value="on"
-                              name="end-type"
-                              color="primary"
-                            />
-                          }
-                          label="On"
-                        />
-                        
-                        {recurrence.endType === 'on' && (
-                          <MuiTextField
-                            type="date"
-                            value={recurrence.endDate}
-                            onChange={(e) => setRecurrence(prev => ({
-                              ...prev,
-                              endDate: e.target.value
-                            }))}
-                            size="small"
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
-                          />
-                        )}
-                        
-                        <FormControlLabel
-                          control={
-                            <Radio
-                              checked={recurrence.endType === 'after'}
-                              onChange={() => setRecurrence(prev => ({
-                                ...prev,
-                                endType: 'after'
-                              }))}
-                              value="after"
-                              name="end-type"
-                              color="primary"
-                            />
-                          }
-                          label="After"
-                        />
-                        
-                        {recurrence.endType === 'after' && (
-                          <MuiTextField
-                            type="number"
-                            value={recurrence.occurrences}
-                            onChange={(e) => setRecurrence(prev => ({
-                              ...prev,
-                              occurrences: parseInt(e.target.value) || 1
-                            }))}
-                            size="small"
-                            inputProps={{
-                              min: 1,
-                              max: 50,
-                              style: { width: '80px' }
-                            }}
-                          />
-                        )}
-                      </Box>
-                    </Box>
-                  </Box>
-                )}
-              </Grid>
-            </Grid>
-          </>
-        )}
-        
-        {meetingType === 'instant' && (
-          <MuiTextField
-            fullWidth
-            label="Meeting title (optional)"
-            variant="outlined"
-            value={meetingTitle}
-            onChange={(e) => setMeetingTitle(e.target.value)}
-            margin="normal"
-            placeholder="Quick meeting"
-          />
-        )}
-        
-        <Box mt={2}>
-          <Button
-            startIcon={<TuneIcon />}
-            onClick={handleSettingsMenuOpen}
-            ref={settingsMenuRef}
-          >
-            Meeting options
-          </Button>
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => setCreateMeetingDialogOpen(false)}>Cancel</Button>
-        <Button 
-          variant="contained" 
-          color="primary" 
-          onClick={handleCreateMeeting}
-          disabled={isCreating || (meetingType === 'scheduled' && (!scheduledDate || !scheduledTime))}
-          startIcon={isCreating ? <CircularProgress size={20} /> : <VideoCallIcon />}
-        >
-          {isCreating ? 'Creating...' : meetingType === 'scheduled' ? 'Schedule' : 'Create'}
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
   
   return (
     <Box>
@@ -2128,7 +1938,7 @@ const MeetingHome = () => {
                             <MeetingRoomIcon />
                           </Avatar>
                         </ListItemAvatar>
-                        <ListItemText
+                        <MuiListItemText
                           primary={meeting.title || 'Untitled Meeting'}
                           secondary={`Starts at ${formatDate(meeting.startTime)}`}
                         />
@@ -2205,7 +2015,7 @@ const MeetingHome = () => {
                             <MeetingRoomIcon />
                           </Avatar>
                         </ListItemAvatar>
-                        <ListItemText
+                        <MuiListItemText
                           primary={meeting.title || 'Untitled Meeting'}
                           secondary={`Ended at ${formatDate(meeting.endTime || meeting.updatedAt)}`}
                         />
