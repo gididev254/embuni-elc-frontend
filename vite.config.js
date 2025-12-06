@@ -69,82 +69,52 @@ export default defineConfig(({ mode }) => {
       minify: 'terser',
       terserOptions: {
         compress: {
-          drop_console: true, // Remove console.log in production
-          drop_debugger: true,
-          pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn'],
+          // Keep console.error in production
+          drop_console: false,
+          pure_funcs: ['console.log', 'console.info', 'console.debug'],
+          // Disable hoisting to prevent TDZ issues
+          hoist_vars: false,
+          hoist_funs: false,
+          // Keep function names for better error messages
+          keep_fnames: true,
+          // Keep class names for better error messages
+          keep_classnames: true,
+          // Disable some aggressive optimizations that might cause issues
+          reduce_vars: false,
+          unused: false
         },
         mangle: {
-          safari10: true,
+          // Keep function names for better error messages
+          keep_fnames: true,
+          // Keep class names for better error messages
+          keep_classnames: true,
+          // Disable property mangling to prevent issues
+          properties: false
         },
+        // Preserve function names for better error messages
+        keep_classnames: true,
+        keep_fnames: true,
+        // Disable hoisting to prevent TDZ issues
+        hoist_vars: false,
+        hoist_funs: false,
       },
-      // Optimize chunk splitting
-      rollupOptions: {
-        output: {
-          manualChunks: (id) => {
-            // Separate vendor chunks for better caching
-            if (id.includes('node_modules')) {
-              // React ecosystem
-              if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
-                return 'react-vendor';
-              }
-              // UI libraries
-              if (id.includes('lucide-react') || id.includes('react-toastify') || id.includes('react-slick')) {
-                return 'ui-vendor';
-              }
-              // Internationalization
-              if (id.includes('i18next')) {
-                return 'i18n-vendor';
-              }
-              // Charts and visualization
-              if (id.includes('recharts')) {
-                return 'charts-vendor';
-              }
-              // State management
-              if (id.includes('zustand')) {
-                return 'state-vendor';
-              }
-              // Date utilities
-              if (id.includes('date-fns')) {
-                return 'date-vendor';
-              }
-              // HTTP client
-              if (id.includes('axios')) {
-                return 'http-vendor';
-              }
-              // Socket.io
-              if (id.includes('socket.io')) {
-                return 'socket-vendor';
-              }
-              // Other node_modules
-              return 'vendor';
-            }
-          },
-          // Optimize chunk naming for better caching
-          chunkFileNames: (chunkInfo) => {
-            const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop() : 'chunk';
-            return `js/[name]-[hash].js`;
-          },
-          entryFileNames: 'js/[name]-[hash].js',
-          assetFileNames: (assetInfo) => {
-            const info = assetInfo.name.split('.');
-            const ext = info[info.length - 1];
-            if (/\.(mp4|webm|ogg|mp3|wav|flac|aac)$/.test(assetInfo.name)) {
-              return `media/[name]-[hash][extname]`;
-            }
-            if (/\.(png|jpe?g|gif|svg|webp|avif)$/.test(assetInfo.name)) {
-              return `images/[name]-[hash][extname]`;
-            }
-            if (/\.(woff2?|eot|ttf|otf)$/.test(assetInfo.name)) {
-              return `fonts/[name]-[hash][extname]`;
-            }
-            return `assets/[name]-[hash][extname]`;
-          },
-        },
+      mangle: {
+        safari10: true,
       },
       // Increase chunk size warning limit
       chunkSizeWarningLimit: 1000,
-      // Enable source maps for production debugging (optional)
-      sourcemap: mode === 'development',
+      // Enable source maps for production debugging
+      sourcemap: true,
+      // Better error handling for production
+      rollupOptions: {
+        onwarn(warning, warn) {
+          // Ignore circular dependency warnings for now
+          if (warning.code === 'CIRCULAR_DEPENDENCY') {
+            return;
+          }
+          warn(warning);
+        }
+      },
       // Generate manifest for PWA
       manifest: {
         name: 'University of Embu Equity Leaders Program',
