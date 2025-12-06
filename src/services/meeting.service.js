@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { API_URL } from '../config/config';
+import { API_BASE_URL } from '../config/api';
 import authHeader from './auth-header';
 
-const MEETING_API_URL = `${API_URL}/meetings`;
+const MEETING_API_URL = `${API_BASE_URL}/meetings`;
 
 const meetingService = {
   // Create a new meeting
