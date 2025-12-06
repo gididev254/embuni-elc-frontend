@@ -1,6 +1,18 @@
 import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
-import { Activity } from 'lucide-react';
+
+// Safely import the Activity icon with a fallback
+let ActivityIcon;
+try {
+  const lucide = require('lucide-react');
+  ActivityIcon = lucide.Activity || lucide.ActivityIcon || (() => (
+    <span className="inline-block w-6 h-6 bg-gray-200 rounded-full"></span>
+  ));
+} catch (e) {
+  ActivityIcon = () => (
+    <span className="inline-block w-6 h-6 bg-gray-200 rounded-full"></span>
+  );
+}
 
 /**
  * ActivityLog - Display admin activity timeline
@@ -19,7 +31,13 @@ const ActivityLog = ({ activities = [], isLoading = false }) => {
   if (!activities || activities.length === 0) {
     return (
       <div className="card p-6 text-center">
-        <Activity size={48} className="mx-auto text-neutral-300 mb-4" />
+        <div className="mx-auto mb-4 text-neutral-300">
+          {ActivityIcon ? (
+            <ActivityIcon size={48} className="mx-auto" />
+          ) : (
+            <span className="inline-block w-12 h-12 bg-gray-200 rounded-full"></span>
+          )}
+        </div>
         <p className="text-neutral-600">No activities yet</p>
       </div>
     );

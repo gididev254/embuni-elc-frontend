@@ -11,6 +11,7 @@ import { useAuth } from '../context/AuthContext';
 import { adminService } from '../services/adminService';
 import StatsCard from '../components/admin/StatsCard';
 import ActivityLog from '../components/admin/ActivityLog';
+import ErrorBoundary from '../components/common/ErrorBoundary';
 import { 
   ROLE_LABELS, 
   ROLE_ICONS, 
@@ -345,10 +346,12 @@ const AdminDashboard = () => {
               <h3 className="font-heading text-lg font-bold text-charcoal mb-4">
                 Recent Activity
               </h3>
-              <ActivityLog 
-                activities={stats?.recentActivity || []}
-                isLoading={loading}
-              />
+              <ErrorBoundary>
+                <ActivityLog 
+                  activities={stats?.recentActivity || []}
+                  isLoading={loading}
+                />
+              </ErrorBoundary>
             </div>
           )}
         </div>
