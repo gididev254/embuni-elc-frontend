@@ -154,26 +154,12 @@ export const courseService = {
       console.error('Error fetching course analytics:', error);
       throw error;
     }
-  }
-    } catch (error) {
-      throw error.response?.data || error.message;
-    }
-  },
-
-  // Update course (for instructors)
-  updateCourse: async (courseId, courseData) => {
-    try {
-      const response = await axios.put(`${API_BASE_URL}/courses/${courseId}`, courseData);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || error.message;
-    }
   },
 
   // Delete course (for instructors)
   deleteCourse: async (courseId) => {
     try {
-      const response = await axios.delete(`${API_BASE_URL}/courses/${courseId}`);
+      const response = await apiClient.delete(`${API_ENDPOINTS.COURSES.DELETE(courseId)}`);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
