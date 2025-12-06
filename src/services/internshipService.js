@@ -110,14 +110,18 @@ export const internshipService = {
   },
 
   async getStudentApplications(params = {}) {
-    return this.getMyApplications(params.token || '', params);
-  },
+    const queryParams = new URLSearchParams();
+    Object.keys(params).forEach(key => {
       if (params[key] !== undefined && params[key] !== '') {
         queryParams.append(key, params[key]);
       }
     });
     
-    const response = await apiClient.get(`/api/internships/my-applications?${queryParams}`);
+    const response = await apiClient.get(`/api/internships/my-applications?${queryParams}`, {
+      headers: {
+        'Authorization': `Bearer ${params.token || ''}`
+      }
+    });
     return response;
   },
 
