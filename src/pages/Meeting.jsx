@@ -1,33 +1,36 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
-import { JitsiMeeting } from '@jitsi/react-sdk';
-import { 
-  Box, 
-  Button, 
-  Container, 
-  Typography, 
-  Paper, 
-  TextField, 
-  Dialog, 
-  DialogTitle, 
-  DialogContent, 
-  DialogActions,
-  IconButton,
-  Tooltip,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-  Badge,
-  Avatar,
-  Chip,
-  Grid,
-  useTheme,
-  useMediaQuery
-} from '@mui/material';
+
+// Dynamically import JitsiMeeting to avoid SSR issues
+const JitsiMeeting = lazy(() => import('@jitsi/react-sdk').then(module => ({ default: module.JitsiMeeting })));
+
+// Import MUI components individually to optimize bundle size
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Divider from '@mui/material/Divider';
+import Badge from '@mui/material/Badge';
+import Avatar from '@mui/material/Avatar';
+import Chip from '@mui/material/Chip';
+import Grid from '@mui/material/Grid';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import CircularProgress from '@mui/material/CircularProgress';
 import {
   Mic as MicIcon,
   MicOff as MicOffIcon,
@@ -123,6 +126,60 @@ const ParticipantAvatar = styled(Avatar)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
   color: theme.palette.primary.contrastText,
 }));
+
+// Loading component for JitsiMeeting
+const JitsiLoader = () => (
+  <Box 
+    display="flex" 
+    justifyContent="center" 
+    alignItems="center" 
+    minHeight="400px"
+    flexDirection="column"
+    gap={2}
+  >
+    <CircularProgress />
+    <Typography>Loading meeting...</Typography>
+  </Box>
+);
+
+// Error boundary for JitsiMeeting
+class JitsiErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('JitsiMeeting Error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <Box 
+          p={3} 
+          bgcolor="error.light" 
+          color="error.contrastText"
+          borderRadius={1}
+          textAlign="center"
+        >
+          <Typography variant="h6" gutterBottom>
+            Failed to load the meeting
+          </Typography>
+          <Typography variant="body2">
+            There was an error loading the video conference. Please refresh the page to try again.
+          </Typography>
+        </Box>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 const Meeting = () => {
   const { roomName } = useParams();
