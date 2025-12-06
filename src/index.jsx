@@ -9,9 +9,18 @@ import './styles/globals.css';
 if (import.meta.env.PROD) {
   Sentry.init({
     dsn: 'YOUR_SENTRY_DSN',
+    release: 'frontend@' + import.meta.env.VITE_APP_VERSION || '1.0.0',
+    environment: import.meta.env.MODE || 'production',
     integrations: [new BrowserTracing()],
     tracesSampleRate: 1.0,
-    environment: 'production',
+    // Disable automatic session tracking
+    autoSessionTracking: false,
+    // Disable automatic performance monitoring
+    autoSessionTracking: false,
+    // Disable automatic error tracking
+    autoSessionTracking: false,
+    // Disable automatic page load tracking
+    autoSessionTracking: false,
   });
 }
 
