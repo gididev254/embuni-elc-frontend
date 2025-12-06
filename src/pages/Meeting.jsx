@@ -54,7 +54,7 @@ import {
   PresentToAll as PresentToAllIcon
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
-import { meetingService } from '../services/meeting.service';
+import meetingService from '../services/meeting.service';
 import { useTranslation } from 'react-i18next';
 
 // Styled components
