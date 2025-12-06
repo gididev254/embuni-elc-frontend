@@ -1,6 +1,16 @@
 import axios from 'axios';
 import { API_BASE_URL } from '../config/api';
 
+// Get auth header with JWT token
+export const authHeader = () => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (user && user.token) {
+    return { 'Authorization': 'Bearer ' + user.token };
+  } else {
+    return {};
+  }
+};
+
 const api = axios.create({
   baseURL: `${API_BASE_URL}/auth`,
   headers: {
