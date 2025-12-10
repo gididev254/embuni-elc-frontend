@@ -1,5 +1,5 @@
 /**
- * Main App Component - Cleaned and Simplified
+ * Main App Component
  * Optimized with lazy loading for better performance and code splitting
  */
 
@@ -364,44 +364,18 @@ function App() {
                           <ProgramsAdminPortal />
                         </AdminRoute>
                       } />
-                      <Route path="/admin/logins" element={
-                        <AdminRoute requiredPermission={PERMISSIONS.MANAGE_ADMINS}>
-                          <SuperAdminPortal />
-                        </AdminRoute>
-                      } />
-                      <Route path="/admin/reports" element={
-                        <AdminRoute requiredPermission={PERMISSIONS.VIEW_REPORTS}>
-                          <div className="container-custom py-8">
-                            <h1 className="text-3xl font-bold mb-4">Reports & Analytics</h1>
-                            <p className="text-neutral-600">Reports page coming soon...</p>
-                          </div>
-                        </AdminRoute>
-                      } />
-                      <Route path="/admin/documents" element={
-                        <AdminRoute requiredPermission={PERMISSIONS.MANAGE_DOCUMENTS}>
-                          <div className="container-custom py-8">
-                            <h1 className="text-3xl font-bold mb-4">Documents Manager</h1>
-                            <p className="text-neutral-600">Documents management coming soon...</p>
-                          </div>
-                        </AdminRoute>
-                      } />
-                      <Route path="/admin/logs" element={
-                        <AdminRoute requiredPermission={PERMISSIONS.MANAGE_SYSTEM_LOGS}>
-                          <LogsAdminPortal />
-                        </AdminRoute>
-                      } />
 
-                      {/* 404 Catch-all Route */}
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </Suspense>
-                </main>
-                <Footer />
-              </div>
+              
+              {/* 404 Catch-all Route */}
+              <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+            </main>
+          </div>
             </ToastProvider>
-          </ContactProvider>
-        </AuthProvider>
-      </Router>
+        </ContactProvider>
+      </AuthProvider>
+        </Router>
     </ProductionErrorBoundary>
   );
 }
