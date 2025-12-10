@@ -15,12 +15,6 @@ if (import.meta.env.PROD) {
     tracesSampleRate: 1.0,
     // Disable automatic session tracking
     autoSessionTracking: false,
-    // Disable automatic performance monitoring
-    autoSessionTracking: false,
-    // Disable automatic error tracking
-    autoSessionTracking: false,
-    // Disable automatic page load tracking
-    autoSessionTracking: false,
   });
 }
 
