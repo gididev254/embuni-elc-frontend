@@ -42,8 +42,4 @@ const filteredHeaders = Object.fromEntries(
   Object.entries(securityHeaders).filter(([, value]) => value !== '')
 );
 
-export {
-  securityHeaders: filteredHeaders,
-  cspDirectives,
-  cspHeaderValue
-};
+export { securityHeaders, cspDirectives, cspHeaderValue };
